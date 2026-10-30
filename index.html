@@ -4,107 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instalación 3D - La armonía del saber</title>
-    <style>
-        body { 
-            margin: 0; 
-            padding: 0; 
-            background-color: #050505; 
-            color: #f0f0f0; 
-            font-family: monospace; 
-            overflow-x: hidden;
-        }
-
-        /* Estilos para el texto curatorial */
-        #curatorial-section {
-            background: #0a0a0a;
-            color: #d0d0d0;
-            padding: 60px 20px;
-            border-bottom: 1px solid #222;
-        }
-        .curatorial-content {
-            max-width: 750px;
-            margin: 0 auto;
-            line-height: 1.7;
-            font-family: sans-serif;
-        }
-        .curatorial-content h2 {
-            color: #fff;
-            font-size: 2rem;
-            margin-bottom: 25px;
-            font-family: monospace;
-            letter-spacing: -0.5px;
-        }
-        .curatorial-content p {
-            margin-bottom: 20px;
-            font-size: 1rem;
-            color: #b8b8b8;
-            text-align: justify;
-        }
-        .curatorial-content strong {
-            color: #f0f0f0;
-        }
-
-        /* Contenedor del visor 3D */
-        #viewer-container {
-            position: relative;
-            width: 100%;
-            height: 85vh;
-            min-height: 600px;
-            background-color: #050505;
-        }
-
-        #info { 
-            position: absolute; 
-            top: 20px; 
-            left: 20px; 
-            z-index: 10; 
-            background: rgba(0, 0, 0, 0.75); 
-            padding: 15px; 
-            border-radius: 8px; 
-            border: 1px solid #333; 
-            backdrop-filter: blur(4px);
-        }
-        h1 { font-size: 1.2rem; margin: 0 0 5px 0; color: #fff; }
-        p { font-size: 0.85rem; margin: 0; color: #aaa; }
-        
-        /* Botón limpio y minimalista */
-        #btn-medidas {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 10;
-            background: #1f1f1f;
-            color: #e0e0e0;
-            border: 1px solid #444;
-            padding: 10px 18px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s, border-color 0.2s;
-        }
-        #btn-medidas:hover { background: #2a2a2a; border-color: #777; }
-
-        /* Estilo sobrio y arquitectónico unificado */
-        .medida-tag {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            background: rgba(15, 15, 15, 0.92);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #f0f0f0;
-            padding: 6px 12px;
-            font-size: 0.75rem;
-            border-radius: 4px;
-            pointer-events: none;
-            white-space: nowrap;
-            display: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-            letter-spacing: 0.5px;
-            text-align: center;
-        }
-
-        canvas { display: block; }
-    </style>
+    <!-- Vinculamos la hoja de estilos externa -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -180,6 +81,14 @@
             elementoHTML.style.left = `${x}px`;
             elementoHTML.style.top = `${y}px`;
 
+            // --- ESCALA DINÁMICA SEGÚN LA DISTANCIA (ZOOM) ---
+            const distancia = camera.position.distanceTo(vector3D);
+            let escala = 10 / distancia; 
+            escala = Math.max(0.5, Math.min(escala, 1.3));
+
+            elementoHTML.style.transform = `translate(-50%, -50%) scale(${escala})`;
+            // --------------------------------------------------
+
             if (vector.z > 1) {
                 elementoHTML.style.opacity = '0';
             } else {
@@ -209,7 +118,7 @@
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
         scene.add(ambientLight);
 
-        // 3. Contenedor principal con paneles separados (caja oscura con pared trasera translúcida)
+        // 3. Contenedor principal con paneles separados
         const boxWidth = 4;
         const boxHeight = 3.5;
         const boxDepth = 12;
@@ -255,7 +164,7 @@
         frontWall.position.set(0, boxHeight / 2, boxDepth / 2);
         roomGroup.add(frontWall);
 
-        // --- PARED TRASERA TRANSLÚCIDA (Donde cuelga Singularity) ---
+        // --- PARED TRASERA TRANSLÚCIDA ---
         const backWallGeo = new THREE.PlaneGeometry(boxWidth, boxHeight);
         const backWallMat = new THREE.MeshStandardMaterial({
             color: 0x151515,
@@ -273,7 +182,7 @@
 
         const gltfLoader = new THREE.GLTFLoader();
 
-        // Configuración del decodificador Draco para archivos comprimidos
+        // Configuración del decodificador Draco
         const dracoLoader = new THREE.DRACOLoader();
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
         gltfLoader.setDRACOLoader(dracoLoader);
@@ -329,7 +238,7 @@
             console.error('Error al cargar cloud.glb:', error);
         });
 
-        // 6. CARGA DIRECTA DE GLASS (glass.glb) - Cálido
+        // 6. CARGA DIRECTA DE GLASS (glass.glb)
         gltfLoader.load('./glass.glb', function (gltf) {
             const glassMesh = gltf.scene;
             
@@ -365,7 +274,7 @@
             console.error('Error al cargar glass.glb:', error);
         });
 
-        // 7. LUZ CONTINUA (Continuel-lumière-mobile - Julio Le Parc)
+        // 7. LUZ CONTINUA (Le Parc)
         const platesGroup = new THREE.Group();
         platesGroup.position.set(0, boxHeight - 0.2, -3.0);
         scene.add(platesGroup);

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instalación 3D - La armonía del saber</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #050505; 
+            color: #f0f0f0; 
+            font-family: monospace; 
+            overflow-x: hidden;
+        }
+
+        /* Estilos para el texto curatorial */
+        #curatorial-section {
+            background: #0a0a0a;
+            color: #d0d0d0;
+            padding: 60px 20px;
+            border-bottom: 1px solid #222;
+        }
+        .curatorial-content {
+            max-width: 750px;
+            margin: 0 auto;
+            line-height: 1.7;
+            font-family: sans-serif;
+        }
+        .curatorial-content h2 {
+            color: #fff;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            font-family: monospace;
+            letter-spacing: -0.5px;
+        }
+        .curatorial-content p {
+            margin-bottom: 20px;
+            font-size: 1rem;
+            color: #b8b8b8;
+            text-align: justify;
+        }
+        .curatorial-content strong {
+            color: #f0f0f0;
+        }
+
+        /* Contenedor del visor 3D */
+        #viewer-container {
+            position: relative;
+            width: 100%;
+            height: 85vh;
+            min-height: 600px;
+            background-color: #050505;
+        }
+
+        #info { 
+            position: absolute; 
+            top: 20px; 
+            left: 20px; 
+            z-index: 10; 
+            background: rgba(0, 0, 0, 0.75); 
+            padding: 15px; 
+            border-radius: 8px; 
+            border: 1px solid #333; 
+            backdrop-filter: blur(4px);
+        }
+        h1 { font-size: 1.2rem; margin: 0 0 5px 0; color: #fff; }
+        p { font-size: 0.85rem; margin: 0; color: #aaa; }
+        
+        /* Botón limpio y minimalista */
+        #btn-medidas {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            background: #1f1f1f;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            padding: 10px 18px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        #btn-medidas:hover { background: #2a2a2a; border-color: #777; }
+
+        /* Estilo sobrio y arquitectónico unificado */
+        .medida-tag {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 15, 15, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #f0f0f0;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            pointer-events: none;
+            white-space: nowrap;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+
+    <!-- BLOQUE CURATORIAL (Antes del visor 3D) -->
+    <section id="curatorial-section">
+        <div class="curatorial-content">
+            <h2>La armonía del saber</h2>
+            <p>La exposición propone una travesía fenomenológica y conceptual que aborda el pasaje desde el vacío primordial y el caos del desconocimiento hasta la iluminación y el orden del saber. Concebida como una instalación inmersiva de carácter arquitectónico, la muestra opera dentro de una caja oscura de proporciones precisas (12x4 metros por 3.5 de alto), donde el espacio no es meramente un contenedor, sino un dispositivo activo de transformación cognitiva.</p>
+            <p>El recorrido se inicia en la zona de ingreso con <strong>Derrumbe</strong>, una pieza que enfrenta al espectador con la densidad tectónica, la aspereza y la opacidad de lo informe. Envolviendo el espacio con frecuencias graves y una penumbra asfixiante, esta primera estación simboliza la resistencia inicial del objeto de estudio, la opacidad del saber aún no decodificado. Es el umbral del caos y de la dureza material.</p>
+            <p>Avanzando en la penumbra, el trayecto discurre por lo efímero de la incertidumbre a través de <strong>Fog Sculpture</strong>. Aquí, la materialidad se desvanece en una suspensión gaseosa e inestable que desafía la percepción estática, traduciendo plásticamente la vacilación del pensamiento frente a lo intangible.</p>
+            <p>El movimiento de la mirada hacia el plano cenital revela <strong>Luz Continua</strong> (un homenaje conceptual a las dinámicas ópticas de Julio Le Parc). Este desplazamiento vertical marca el punto de inflexión: el titubeo de la incertidumbre cede ante el dinamismo de la claridad, operando como un vector cinético que empuja al sujeto hacia la iluminación inminente.</p>
+            <p>El clímax de este proceso dialéctico se materializa en el fondo de la sala con <strong>Singularity</strong>. En este punto focal, la luz se concentra sobre un panel de vidrio cálido, enmarcado por una superficie despojada. Lejos de cerrarse sobre sí misma, esta pared final funciona como una apertura diáfana y translúcida: un umbral que revela el entorno natural del campus de la Universidad Nacional de Moreno (UNM).</p>
+            <p>De este modo, la obra culmina en una síntesis armónica donde la razón se funde con el entorno viviente. La transparencia final disuelve los límites de la caja oscura y sella la comunión definitiva entre la naturaleza, la arquitectura y la construcción colectiva del conocimiento.</p>
+        </div>
+    </section>
+
+    <!-- CONTENEDOR DEL MODELADO 3D -->
+    <div id="viewer-container">
+        <div id="info">
+            <h1>La armonía del saber</h1>
+            <p>Estructura 12x4m - Grupo 4 (UNM)</p>
+            <p>Arrastrá con el mouse para rotar la vista.</p>
+        </div>
+
+        <!-- Botón para alternar medidas -->
+        <button id="btn-medidas" onclick="toggleMedidas()">Mostrar Medidas</button>
+
+        <!-- Etiquetas flotantes unificadas y con medidas reales corregidas -->
+        <div id="tag-suelo" class="medida-tag">Sala: 12.0m (Largo) x 4.0m (Ancho)</div>
+        <div id="tag-alto" class="medida-tag">Alto: 3.5m</div>
+        <div id="tag-derrumbe" class="medida-tag">Módulo Derrumbe<br><span style="color:#aaa; font-size:0.7rem;">(3.0m x 1.7m)</span></div>    
+        <div id="tag-cloud" class="medida-tag">Fog Sculpture<br><span style="color:#aaa; font-size:0.7rem;">(2.5m x 2.5m)</span></div>
+        <div id="tag-lumiere" class="medida-tag">Luz Continua (Le Parc)<br><span style="color:#aaa; font-size:0.7rem;">(2.8m x 2.8m - Techo)</span></div>
+        <div id="tag-puf" class="medida-tag">Puf / Asiento<br><span style="color:#aaa; font-size:0.7rem;">(Ø 0.9m x 0.4m)</span></div>
+        <div id="tag-glass" class="medida-tag">Singularity (Glass)<br><span style="color:#aaa; font-size:0.7rem;">(0.9m x 1.8m)</span></div>
+    </div>
+
+    <!-- Importamos Three.js, OrbitControls, GLTFLoader y DRACOLoader desde CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+
+    <script>
+        let mostrarMedidas = false;
+
+        function toggleMedidas() {
+            mostrarMedidas = !mostrarMedidas;
+            const btn = document.getElementById('btn-medidas');
+            const tags = document.querySelectorAll('.medida-tag');
+            
+            if (mostrarMedidas) {
+                btn.innerText = "Ocultar Medidas";
+                btn.style.background = "#2a2a2a";
+                btn.style.borderColor = "#888";
+                tags.forEach(t => t.style.display = 'block');
+            } else {
+                btn.innerText = "Mostrar Medidas";
+                btn.style.background = "#1f1f1f";
+                btn.style.borderColor = "#444";
+                tags.forEach(t => t.style.display = 'none');
+            }
+        }
+
+        function actualizarPosicionEtiqueta(vector3D, elementoHTML, camera, renderer) {
+            const vector = vector3D.clone();
+            vector.project(camera);
+
+            const container = document.getElementById('viewer-container');
+            const x = (vector.x *  .5 + .5) * container.clientWidth;
+            const y = (vector.y * -.5 + .5) * container.clientHeight;
+
+            elementoHTML.style.left = `${x}px`;
+            elementoHTML.style.top = `${y}px`;
+
+            if (vector.z > 1) {
+                elementoHTML.style.opacity = '0';
+            } else {
+                elementoHTML.style.opacity = '1';
+            }
+        }
+
+        // 1. Configuración de la escena
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050505);
+
+        const container3D = document.getElementById('viewer-container');
+        const camera = new THREE.PerspectiveCamera(50, container3D.clientWidth / container3D.clientHeight, 0.1, 1000);
+        camera.position.set(-10, 3.5, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container3D.clientWidth, container3D.clientHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container3D.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.target.set(0, 1.75, 0);
+
+        // 2. Luces ambientales suaves
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        scene.add(ambientLight);
+
+        // 3. Contenedor principal con paneles separados (caja oscura con pared trasera translúcida)
+        const boxWidth = 4;
+        const boxHeight = 3.5;
+        const boxDepth = 12;
+
+        const roomGroup = new THREE.Group();
+
+        const roomMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x111111, 
+            roughness: 0.8 
+        });
+
+        // Piso
+        const floorGeo = new THREE.PlaneGeometry(boxWidth, boxDepth);
+        const floor = new THREE.Mesh(floorGeo, roomMaterial);
+        floor.rotation.x = -Math.PI / 2;
+        floor.position.set(0, 0, 0);
+        floor.receiveShadow = true;
+        roomGroup.add(floor);
+
+        // Techo
+        const ceiling = new THREE.Mesh(floorGeo, roomMaterial);
+        ceiling.rotation.x = Math.PI / 2;
+        ceiling.position.set(0, boxHeight, 0);
+        roomGroup.add(ceiling);
+
+        // Pared Izquierda
+        const sideGeo = new THREE.PlaneGeometry(boxDepth, boxHeight);
+        const leftWall = new THREE.Mesh(sideGeo, roomMaterial);
+        leftWall.rotation.y = Math.PI / 2;
+        leftWall.position.set(-boxWidth / 2, boxHeight / 2, 0);
+        roomGroup.add(leftWall);
+
+        // Pared Derecha
+        const rightWall = new THREE.Mesh(sideGeo, roomMaterial);
+        rightWall.rotation.y = -Math.PI / 2;
+        rightWall.position.set(boxWidth / 2, boxHeight / 2, 0);
+        roomGroup.add(rightWall);
+
+        // Pared Frontal (Ingreso)
+        const frontWallGeo = new THREE.PlaneGeometry(boxWidth, boxHeight);
+        const frontWall = new THREE.Mesh(frontWallGeo, roomMaterial);
+        frontWall.rotation.y = Math.PI;
+        frontWall.position.set(0, boxHeight / 2, boxDepth / 2);
+        roomGroup.add(frontWall);
+
+        // --- PARED TRASERA TRANSLÚCIDA (Donde cuelga Singularity) ---
+        const backWallGeo = new THREE.PlaneGeometry(boxWidth, boxHeight);
+        const backWallMat = new THREE.MeshStandardMaterial({
+            color: 0x151515,
+            roughness: 0.2,
+            metalness: 0.1,
+            transparent: true,
+            opacity: 0.3,
+            side: THREE.DoubleSide
+        });
+        const backWall = new THREE.Mesh(backWallGeo, backWallMat);
+        backWall.position.set(0, boxHeight / 2, -boxDepth / 2);
+        roomGroup.add(backWall);
+
+        scene.add(roomGroup);
+
+        const gltfLoader = new THREE.GLTFLoader();
+
+        // Configuración del decodificador Draco para archivos comprimidos
+        const dracoLoader = new THREE.DRACOLoader();
+        dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+        gltfLoader.setDRACOLoader(dracoLoader);
+
+        // Vectores para las etiquetas
+        const posSuelo = new THREE.Vector3(0, -0.6, 2.0);   
+        const posAlto = new THREE.Vector3(0, boxHeight + 0.6, 0); 
+        
+        const posDerrumbe = new THREE.Vector3(-0.1, 0.8, 4.4);
+        const posCloud = new THREE.Vector3(0, 1.2, 1.0);
+        const posLumiere = new THREE.Vector3(0, 3.2, -3.0);
+        const posPuf = new THREE.Vector3(0, 0.5, -3.0);
+        const posGlass = new THREE.Vector3(0, 1.7, -boxDepth / 2 + 0.1);
+
+        // 4. CARGA DIRECTA DEL DERRUMBE (.glb)
+        gltfLoader.load('./derrumbe.glb', function (gltf) {
+            const derrumbe = gltf.scene;
+            derrumbe.scale.set(0.02, 0.02, 0.04); 
+            derrumbe.position.set(-0.1, 0, 4.4); 
+            derrumbe.rotation.y = -Math.PI / -5.5;
+            derrumbe.traverse((child) => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+            scene.add(derrumbe);
+        }, undefined, function (error) {
+            console.error('Error al cargar derrumbe.glb:', error);
+        });
+
+        // 5. CARGA DIRECTA DE FOG SCULPTURE (cloud.glb)
+        let cloudMesh = null;
+        gltfLoader.load('./cloud.glb', function (gltf) {
+            cloudMesh = gltf.scene;
+            
+            cloudMesh.scale.set(6.28, 2, 5); 
+            cloudMesh.rotation.y = Math.PI / 4; 
+            
+            cloudMesh.traverse((child) => {
+                if (child.isMesh) {
+                    child.material.transparent = true;
+                    child.material.opacity = 0.08; 
+                    child.material.roughness = 0.1;
+                    child.material.depthWrite = false; 
+                }
+            });
+
+            scene.add(cloudMesh);
+            cloudMesh.position.set(-4.24, -3, 1); 
+
+        }, undefined, function (error) {
+            console.error('Error al cargar cloud.glb:', error);
+        });
+
+        // 6. CARGA DIRECTA DE GLASS (glass.glb) - Cálido
+        gltfLoader.load('./glass.glb', function (gltf) {
+            const glassMesh = gltf.scene;
+            
+            glassMesh.scale.set(0.004, 0.006, 0.008); 
+            glassMesh.position.set(0, 1.7, -boxDepth / 2 + 0.05);
+            
+            glassMesh.rotation.x = Math.PI / 2; 
+            glassMesh.rotation.y = 0; 
+            glassMesh.rotation.z = 0;
+            
+            glassMesh.traverse((child) => {
+                if (child.isMesh) {
+                    child.material = new THREE.MeshStandardMaterial({
+                        color: 0xffe6cc,
+                        emissive: 0xff9933,
+                        emissiveIntensity: 2.2,
+                        roughness: 0.05,
+                        metalness: 0.1,
+                        transparent: true,
+                        opacity: 0.8
+                    });
+                }
+            });
+
+            scene.add(glassMesh);
+
+            const glassLight = new THREE.PointLight(0xffaa44, 2.8, 12);
+            glassLight.position.set(0, 1.7, -boxDepth / 2 + 0.2);
+            glassLight.castShadow = true;
+            scene.add(glassLight);
+
+        }, undefined, function (error) {
+            console.error('Error al cargar glass.glb:', error);
+        });
+
+        // 7. LUZ CONTINUA (Continuel-lumière-mobile - Julio Le Parc)
+        const platesGroup = new THREE.Group();
+        platesGroup.position.set(0, boxHeight - 0.2, -3.0);
+        scene.add(platesGroup);
+
+        const lumiereLight = new THREE.PointLight(0xffffff, 2.0, 6);
+        lumiereLight.position.set(0, -0.1, 0);
+        platesGroup.add(lumiereLight);
+
+        const plateGeo = new THREE.PlaneGeometry(0.18, 0.26);
+        const plateMat = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            metalness: 1.0,
+            roughness: 0.05,
+            side: THREE.DoubleSide
+        });
+
+        const cols = 10;
+        const rows = 10;
+        const spacing = 0.28;
+        const platesData = [];
+
+        for (let i = 0; i < cols; i++) {
+            for (let j = 0; j < rows; j++) {
+                const mesh = new THREE.Mesh(plateGeo, plateMat);
+                
+                const x = (i - cols / 2) * spacing + spacing / 2;
+                const z = (j - rows / 2) * spacing + spacing / 2;
+                const y = -Math.random() * 0.3;
+
+                mesh.position.set(x, y, z);
+                platesGroup.add(mesh);
+
+                platesData.push({
+                    mesh: mesh,
+                    baseX: x,
+                    baseZ: z,
+                    speed: 1.8 + Math.random() * 2.0,
+                    phase: Math.random() * Math.PI * 2,
+                    amplitude: 0.06 + Math.random() * 0.08
+                });
+            }
+        }
+
+        // 8. ASIENTO / PUF
+        const poufGroup = new THREE.Group();
+        poufGroup.position.set(0, 0, -3.0);
+
+        const poufBaseGeo = new THREE.CylinderGeometry(0.6, 0.7, 0.3, 32);
+        const poufMat = new THREE.MeshStandardMaterial({
+            color: 0x1a1a1a,
+            roughness: 0.9,
+            metalness: 0.1
+        });
+        const poufBase = new THREE.Mesh(poufBaseGeo, poufMat);
+        poufBase.position.y = 0.15;
+        poufBase.castShadow = true;
+        poufBase.receiveShadow = true;
+        poufGroup.add(poufBase);
+
+        const poufTopGeo = new THREE.SphereGeometry(0.62, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+        const poufTopMat = new THREE.MeshStandardMaterial({
+            color: 0x252525,
+            roughness: 0.8
+        });
+        const poufTop = new THREE.Mesh(poufTopGeo, poufTopMat);
+        poufTop.position.y = 0.3;
+        poufTop.scale.set(1, 0.25, 1);
+        poufTop.castShadow = true;
+        poufGroup.add(poufTop);
+
+        scene.add(poufGroup);
+
+        // 9. PUERTA DE ACCESO
+        const doorGroup = new THREE.Group();
+        doorGroup.position.set(-boxWidth / 2 + 0.01, 1.0, 3.5);
+        
+        const doorGeo = new THREE.PlaneGeometry(0.9, 1.8);
+        const doorMat = new THREE.MeshStandardMaterial({
+            color: 0x1a1a1a,
+            roughness: 0.6,
+            metalness: 0.5,
+            transparent: true,
+            opacity: 0.3,
+            side: THREE.DoubleSide
+        });
+        const doorMesh = new THREE.Mesh(doorGeo, doorMat);
+        doorMesh.rotation.y = Math.PI / 2;
+        doorGroup.add(doorMesh);
+
+        const frameGeo = new THREE.EdgesGeometry(doorGeo);
+        const frameMat = new THREE.LineBasicMaterial({ color: 0x777777, linewidth: 1 });
+        const doorFrame = new THREE.LineSegments(frameGeo, frameMat);
+        doorFrame.rotation.y = Math.PI / 2;
+        doorGroup.doorFrame = doorFrame;
+        doorGroup.add(doorFrame);
+
+        scene.add(doorGroup);
+
+        const elTagSuelo = document.getElementById('tag-suelo');
+        const elTagAlto = document.getElementById('tag-alto');
+        const elTagDerrumbe = document.getElementById('tag-derrumbe');
+        const elTagCloud = document.getElementById('tag-cloud');
+        const elTagLumiere = document.getElementById('tag-lumiere');
+        const elTagPuf = document.getElementById('tag-puf');
+        const elTagGlass = document.getElementById('tag-glass');
+
+        // 10. Loop de animación
+        let clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            let elapsedTime = clock.getElapsedTime();
+            
+            if (cloudMesh) {
+                cloudMesh.position.y = 0 + Math.sin(elapsedTime * 1.2) * 0.08;
+            }
+
+            platesData.forEach((item) => {
+                item.mesh.rotation.y = Math.sin(elapsedTime * item.speed + item.phase) * item.amplitude;
+                item.mesh.rotation.x = Math.cos(elapsedTime * (item.speed * 0.8) + item.phase) * (item.amplitude * 0.5);
+                item.mesh.position.x = item.baseX + Math.sin(elapsedTime * item.speed * 0.5 + item.phase) * 0.015;
+            });
+
+            lumiereLight.intensity = 1.8 + Math.sin(elapsedTime * 4) * 0.5;
+
+            controls.update();
+            renderer.render(scene, camera);
+
+            if (mostrarMedidas) {
+                actualizarPosicionEtiqueta(posSuelo, elTagSuelo, camera, renderer);
+                actualizarPosicionEtiqueta(posAlto, elTagAlto, camera, renderer);
+                actualizarPosicionEtiqueta(posDerrumbe, elTagDerrumbe, camera, renderer);
+                actualizarPosicionEtiqueta(posCloud, elTagCloud, camera, renderer);
+                actualizarPosicionEtiqueta(posLumiere, elTagLumiere, camera, renderer);
+                actualizarPosicionEtiqueta(posPuf, elTagPuf, camera, renderer);
+                actualizarPosicionEtiqueta(posGlass, elTagGlass, camera, renderer);
+            }
+        }
+        animate();
+
+        // Responsive adaptado al contenedor
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('viewer-container');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
+</body>
+</html>

@@ -20,7 +20,7 @@ body {
     margin: 0 auto;
     line-height: 1.7;
     font-family: sans-serif;
-    border-bottom: none; /* ELIMINAMOS LA LÍNEA DIVISORIA AQUÍ */
+    border-bottom: none;
 }
 
 .curatorial-content h2 {
@@ -44,7 +44,7 @@ body {
 
 /* --- SECCIÓN DEL PLANO TÉCNICO --- */
 #blueprint-section {
-    background: #070707; /* Un tono apenas más oscuro para diferenciar el plano sutilmente */
+    background: #070707;
     padding: 50px 20px; 
     text-align: center;
     border-bottom: none; 
@@ -68,8 +68,35 @@ body {
     width: 100%; 
     height: auto; 
     border-radius: 6px; 
-    border: 1px solid #222; 
+    border: 1px solid #333; 
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+
+/* --- DISEÑO DE TARJETAS DE OBRAS EN DOS COLUMNAS --- */
+.obra-card {
+    background: #0d0d0d;
+    border: 1px solid #222;
+    padding: 30px;
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 30px;
+    align-items: center;
+}
+
+.obra-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.obra-imagen img {
+    width: 100%;
+    height: auto;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #222;
 }
 
 /* --- CONTENEDOR DEL VISOR 3D --- */
@@ -148,7 +175,6 @@ body {
 
 canvas { display: block; }
 
-
 /* ==========================================
    ADAPTACIÓN PARA CELULARES (RESPONSIVE)
    ========================================== */
@@ -164,6 +190,11 @@ canvas { display: block; }
     .curatorial-content p {
         font-size: 0.9rem;
         text-align: left;
+    }
+
+    .obra-card {
+        grid-template-columns: 1fr;
+        padding: 20px;
     }
 
     #info {
@@ -261,53 +292,9 @@ canvas { display: block; }
     color: #ddd;
 }
 
-/* Filas de Etapas (Jerarquía visual limpia) */
-.gantt-table tr.etapa-preprod td {
-    background: #1b2a38;
-    color: #fff;
-    font-weight: bold;
-    font-family: monospace;
-}
-
-.gantt-table tr.etapa-prod td {
-    background: #574010;
-    color: #fff;
-    font-weight: bold;
-    font-family: monospace;
-}
-
-.gantt-table tr.etapa-expo td {
-    background: #1e3314;
-    color: #fff;
-    font-weight: bold;
-    font-family: monospace;
-}
-
-/* Celdas de cronograma / bloques de color */
-.cell-preprod {
-    background: #1b2a38;
-    text-align: center;
-}
-
-.cell-prod {
-    background: #574010;
-}
-
-.cell-expo {
-    background: #1e3314;
-}
-
-.cell-hito {
-    background: #8c1c1c;
-    text-align: center;
-    color: white;
-    font-weight: bold;
-}
-
 .text-center { text-align: center; }
 .text-muted { color: #888; }
 
-/* Bloque de referencias inferior */
 .gantt-references {
     margin-top: 20px;
     background: #0c0c0c;
@@ -325,18 +312,4 @@ canvas { display: block; }
 .gantt-references span {
     font-weight: bold;
     color: #aaa;
-}
-
-.ref-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #ccc;
-}
-
-.ref-box {
-    width: 14px;
-    height: 14px;
-    display: inline-block;
-    border-radius: 2px;
 }
